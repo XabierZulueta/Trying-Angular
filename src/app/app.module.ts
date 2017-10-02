@@ -6,6 +6,8 @@ import { HttpModule }    from '@angular/http';
 import { AppComponent } from './app.component';
 import { SopranoDetailComponent } from './soprano-detail.component';
 import { SopranoComponent } from './soprano.component';
+import { CeldaService } from './celda.service';
+import { CeldaComponent } from './celda.component';
 import { SopranoService } from './soprano.service';
 import { DashboardComponent } from './dashboard.component';
 import { SopranoSearchComponent } from './soprano-search.component';
@@ -21,7 +23,8 @@ import { AppRoutingModule }     from './app-routing.module';
     DashboardComponent,
     SopranoDetailComponent,
     SopranoComponent,
-    SopranoSearchComponent
+    SopranoSearchComponent,
+    CeldaComponent
   ],
   imports: [
     BrowserModule,
@@ -30,7 +33,7 @@ import { AppRoutingModule }     from './app-routing.module';
     InMemoryWebApiModule.forRoot(InMemoryDataService),
     AppRoutingModule
   ],
-  providers: [SopranoService],
+  providers: [SopranoService, CeldaService],
   bootstrap: [AppComponent]
 })
 

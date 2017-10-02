@@ -7,6 +7,6 @@ export class InMemoryDataService implements InMemoryDbService {
     {id:3,edad:22,nombre:'Xabieh'},
     {id:4,edad:20,nombre:'Cuarto'}
     ];
-    return {sopranos};
+    return { sopranos};
   }
 }

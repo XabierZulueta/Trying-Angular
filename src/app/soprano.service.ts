@@ -42,6 +42,7 @@ export class SopranoService{
   }
 
   private headers = new Headers({'Content-Type': 'application/json'});
+  
   update(soprano : Soprano):Promise<Soprano>{
     const url = `${this.sopranosUrl}/${soprano.id}`;
     return this.http
