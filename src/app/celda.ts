@@ -8,5 +8,6 @@ export class Celda{
     f : number;
     tipo : Tipo;
     padre: Celda;
-
+    cerrado : boolean;
+    solucion : boolean;
 }

@@ -64,7 +64,7 @@ export class CeldaComponent implements OnInit{
     hijos = new Array<Celda>();
     size : number;
     abiertos :Celda[]; ;
-    cerrados = new Array<Celda>();
+    cerrados :Celda[];
 
     onSelect(celda: Celda): void {
         this.selectedCelda = celda;
@@ -81,11 +81,17 @@ export class CeldaComponent implements OnInit{
         //this.getLaberinto();
         this.size=3;
         this.abiertos = new Array<Celda>();
+        this.cerrados = new Array<Celda>()
     }
 
     changeTipo(celda : Celda, laberinto: Celda[][]): void{
         switch(celda.tipo.tipo){
             case 'CAMPO':
+                celda.tipo.tipo = 'DESIERTO';
+                celda.tipo.color = '#f0ad4e';
+                celda.tipo.velocidad = 0.25;
+                break;
+            case 'DESIERTO': 
                 celda.tipo.tipo = 'OBSTACULO';
                 celda.tipo.color = '#8e8e8e';
                 celda.tipo.velocidad = 0.0;
@@ -103,10 +109,14 @@ export class CeldaComponent implements OnInit{
     calcularHeuristicas():void{
         for(var i=0; i<this.laberinto.length; i++){
             for (var j = 0; j < this.laberinto[i].length; j++) {
-                if (this.laberinto[i][j].tipo.tipo=='CAMPO')
+                if (this.laberinto[i][j].tipo.tipo=='CAMPO'){
                     this.laberinto[i][j].h = this.calcularHeuristica(this.laberinto[i][j]);
-                else
+                    this.laberinto[i][j].f = this.laberinto[i][j].h + this.laberinto[i][j].g;
+                }
+                else{
                     this.laberinto[i][j].h = 0;
+                    this.laberinto[i][j].f = 0;
+                }
             }
         }
     }
@@ -120,76 +130,82 @@ export class CeldaComponent implements OnInit{
         for(var i = 0;i<this.hijos.length; i++){
             if (this.cerrados.indexOf(this.hijos[i]) == -1 && this.abiertos.indexOf(this.hijos[i])==-1){
                 this.abiertos.push(this.hijos[i]);
-                console.log(this.abiertos[0]);
                 this.abiertos.sort(function (a, b){
                     return a.f-b.f;
                 });
-                console.log(this.abiertos[0]);
             }
         }
 
     }
 
     generarHijos(celda : Celda) : Celda[]{
-        var hijo : Celda;
+        var hijo = new Celda;
+        this.hijos = new Array<Celda>();
         //Miro la celda de arriba si no estoy en la primera fila.
         if(celda.y>0){
             if (this.laberinto[celda.y-1][celda.x].tipo.tipo != 'OBSTACULO'){
-                hijo = this.generarCelda(celda, this.laberinto[celda.y-1][celda.x]);
+                hijo = this.generarCelda(celda, -1,0);
                 this.hijos.push(hijo);
             }
         }
         //Miro si no estoy en la esquina superior derecha.
         if (celda.x < this.laberinto.length - 1 && celda.y > 0)
             if (this.laberinto[celda.y - 1][celda.x + 1].tipo.tipo != 'OBSTACULO') {
-                hijo = this.generarCelda(celda, this.laberinto[celda.y - 1][celda.x + 1]);
+                hijo = this.generarCelda(celda,-1,1);
                 this.hijos.push(hijo);
             } 
         //Miro si no estoy en la última columna
         if (celda.x < this.laberinto.length - 1)
             if (this.laberinto[celda.y][celda.x + 1].tipo.tipo != 'OBSTACULO') {
-                hijo = this.generarCelda(celda, this.laberinto[celda.y][celda.x + 1]);
+                hijo = this.generarCelda(celda,0,1);
                 this.hijos.push(hijo);
             }
         //Miro si no estoy en la esquina de abajo a la derecha.
         if (celda.x < this.laberinto.length - 1 && celda.y < this.laberinto.length - 1)
             if (this.laberinto[celda.y + 1][celda.x + 1].tipo.tipo != 'OBSTACULO') {
-                hijo = this.generarCelda(celda, this.laberinto[celda.y + 1][celda.x + 1]);
+                hijo = this.generarCelda(celda, 1,1);
                 this.hijos.push(hijo);
             }
         //Miro si no estoy en la última fila
         if (celda.y < this.laberinto.length - 1)
             if (this.laberinto[celda.y + 1][celda.x].tipo.tipo != 'OBSTACULO') {
-                hijo = this.generarCelda(celda, this.laberinto[celda.y + 1][celda.x]);
+                hijo = this.generarCelda(celda,+1,0);
                 this.hijos.push(hijo);
             }
         //Miro si no estoy en la esquina de abajo a la izquierda.
         if (celda.x > 0 && celda.y < this.laberinto.length - 1)
             if (this.laberinto[celda.y + 1][celda.x - 1].tipo.tipo != 'OBSTACULO') {
-                hijo = this.generarCelda(celda, this.laberinto[celda.y + 1][celda.x - 1]);
+                hijo = this.generarCelda(celda, 1,-1);
                 this.hijos.push(hijo);
             }         
         //Miro la celda de la izquierda si no estoy en la primera columna.
         if(celda.x>0){
             if (this.laberinto[celda.y][celda.x - 1].tipo.tipo != 'OBSTACULO') {
-                hijo = this.generarCelda(celda, this.laberinto[celda.y][celda.x - 1 ]);
+                hijo = this.generarCelda(celda, 0,-1);
                 this.hijos.push(hijo);
             }
         }
         //Miro si no estoy en la esquina superior izquierda.
         if (celda.x >0  && celda.y > 0)
             if (this.laberinto[celda.y - 1][celda.x - 1].tipo.tipo != 'OBSTACULO'){ 
-                hijo = this.generarCelda(celda, this.laberinto[celda.y - 1][celda.x - 1]);
+                hijo = this.generarCelda(celda,-1,-1);
                 this.hijos.push(hijo);
             }          
         return this.hijos;
     }
 
-    generarCelda(celda : Celda,celdaHija:Celda): Celda{
+    generarCelda(celda : Celda,y:number, x:number): Celda{
         var hijo = new Celda;
-        hijo = celdaHija;
-        hijo.padre = celda;
-        hijo.f = celda.g+hijo.h;
+        hijo =  null;
+        hijo = {x:celda.x  + x,y:celda.y+y, 
+            h: this.calcularHeuristica(this.laberinto[celda.y+y][celda.x+x]),
+            g: 1/this.laberinto[celda.y + y][celda.x + x].tipo.velocidad +celda.g,
+            f: 0, tipo: this.laberinto[celda.y + y][celda.x + x].tipo,
+            padre: celda,
+            cerrado: false,
+            solucion:false
+             };
+             hijo.f = hijo.g+hijo.h;
         return hijo;
     }
 
@@ -201,7 +217,9 @@ export class CeldaComponent implements OnInit{
             laberinto.push(row);
             for (var j = 0; j < size; j++){
                 celda  = {
-                    x: j, y: i, h: 0, g: 0, f: 0, tipo: { velocidad: 0.0, tipo: 'CAMPO', color: '#fff' }, padre: new Celda
+                    x: j, y: i, h: 0, g: 0, f: 0, 
+                    tipo: { velocidad: 1.0, tipo: 'CAMPO', color: '#fff' }, 
+                    padre: new Celda, cerrado : false, solucion: false
                 };
                 row.push(celda);
             }
@@ -210,21 +228,45 @@ export class CeldaComponent implements OnInit{
         this.calcularHeuristicas();
     }
 
+    limpiarLaberinto():void{
+        for (var i = 0; i < this.size; i++) {
+            for (var j = 0; j < this.size; j++) {
+                this.laberinto[j][i] = {
+                    x: j, y: i, h: 0, g: 0, f: 0,
+                    tipo: { velocidad: 1.0, tipo: 'CAMPO', color: '#fff' },
+                    padre: new Celda, cerrado: false, solucion: false
+                };
+            }
+        }
+    }
+
     buscar():void{
         this.abiertos.length=0;
         this.cerrados.length=0;
         this.abiertos.push(this.laberinto[0][0]);
 
         while(this.abiertos.length!=0){
-            var celda = this.abiertos.pop();
+            var celda = this.abiertos.shift();
             this.cerrados.push(celda);
-            if (celda == this.laberinto[this.laberinto.length-1][this.laberinto.length-1]){
-                console.log("YAY");
+            celda.cerrado = true;
+            if (celda.x == this.laberinto[this.laberinto.length-1][this.laberinto.length-1].x
+                && celda.y == this.laberinto[this.laberinto.length - 1][this.laberinto.length - 1].y){
                 console.log(this.cerrados);
+                this.laberinto[0][0].padre= null;
+                    this.generarSolucion(celda);
+                console.log(this.cerrados);
+                return;
             }
             else{
                 this.explorarCelda(celda);
             }
         }
+    }
+
+    generarSolucion(celda : Celda):void{
+        if(celda.padre!=null)
+            this.generarSolucion(celda.padre);
+        celda.solucion = true;
+        celda.tipo.color = "#f0ad4e";
     }
 }

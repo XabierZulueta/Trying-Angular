@@ -11,11 +11,15 @@ import { CeldaComponent } from './celda.component';
 import { SopranoService } from './soprano.service';
 import { DashboardComponent } from './dashboard.component';
 import { SopranoSearchComponent } from './soprano-search.component';
+import { ManzaComponent } from './manza.component';
 
 import { InMemoryWebApiModule } from 'angular-in-memory-web-api';
 import { InMemoryDataService }  from './in-memory-data.service';
 
+import { ColorAuto } from './manza.directive';
+
 import { AppRoutingModule }     from './app-routing.module';
+import { LadoDirective } from './lado.directive';
 
 @NgModule({
   declarations: [
@@ -24,7 +28,10 @@ import { AppRoutingModule }     from './app-routing.module';
     SopranoDetailComponent,
     SopranoComponent,
     SopranoSearchComponent,
-    CeldaComponent
+    CeldaComponent,
+    ManzaComponent,
+    ColorAuto,
+    LadoDirective
   ],
   imports: [
     BrowserModule,

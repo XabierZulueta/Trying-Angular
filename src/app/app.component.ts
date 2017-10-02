@@ -8,6 +8,7 @@ import { Component } from '@angular/core';
     <a class="btn btn-default" routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
     <a class="btn btn-default" routerLink="/sopranos" routerLinkActive="active">Sopranos</a>
     <a class="btn btn-default" routerLink="/laberinto" routerLinkActive="active">Laberinto</a>
+    <a class="btn btn-default" routerLink="/manza" routerLinkActive="active">Manza</a>
   </nav>
   <router-outlet></router-outlet>
   `,
